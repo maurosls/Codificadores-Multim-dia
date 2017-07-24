@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Compactadores -  UFF</title>
+        <link rel="stylesheet" >
+		
+		<style>
+			#menu{
+				position: relative;
+				font-family:sans-serif;
+				background-color: beige;
+				padding: 40px;	
+				width: 500px;
+				height: 650px;
+				float: left;
+				border-width: thin;
+    			border-style: solid;
+    			border-color: #000000f;
+			}
+			#titulo{
+				font-size: 40px;
+				border-bottom-color: cadetblue;
+				
+			}
+			#textoInvisivel{
+				visibility: hidden;
+			}		
+			#demonstracao{
+				
+				position: relative;
+				width: 500px;
+				font-family:sans-serif;
+				padding: 40px;
+				height: 650px;
+				background-color:floralwhite;	
+				float: left;
+				border-width: thin;
+    			border-style: solid;
+    			border-color: #000000f;
+			}	
+			
+			
+		
+		</style>		
+    </head>
+    <body>
+		<div id="tudo">
+			<div id="menu">
+				<div id="titulo"> <b>Compactadores de mídias</b></div>
+				<h3><u>Codificação Aritimética</u></h3>
+				
+				<button id ="btt" onclick="comoUtilizar(1)">Como utilizar</button>
+				
+				<h4> Texto de entrada: </h4>
+				<input type="text" name="textoE" id="textoE" size="60"><br>
+				<br>
+				<button id="bt3" onclick="cod_aritimetica(document.getElementById('textoE').value)"> Codificar</button>
+
+				<h4> Texto codificado: </h4>
+				
+				<h5>Tabela de porcentagens</h5>
+				<textarea cols="60" rows="5" name="textoR" id="textoR" size = "60"  ></textarea>
+				<h5>Média dos intervalos</h5>
+				<textarea cols="60" rows="1" name="textoP" id="textoP" size = "60"  ></textarea>
+
+				<br><br>
+				<button id="bt4" onclick="decodifica(document.getElementById('textoR').value,document.getElementById('textoP').value)">Decodificar</button>
+
+				<h4> Texto decodificado: </h4>
+				<input type="text" name="textoS" id="textoS" size="60"><br>
+
+				<div id="textoInvisivel"> 
+					<input type="text" name="textoInvi" id="textoInvi" size="60">
+				</div>
+			</div>
+			
+			<div id ="demonstracao">
+				<h3>Passo a passo:</h3>
+				
+					<textarea cols="70" rows="30" name="textoPasso" id="textoPasso" size = "70"  ></textarea>
+
+			</div>
+			
+		</div>
+		
+		
+		<script>  
+			
+			function comoUtilizar(nada){
+				document.getElementById("textoPasso").value ="Para utilizar o compactador: \n Digite o texto que deseja ser compactado na caixa de texto 'Texto de Entrada' e ao final do texto digite (.) pois ele sera o delimitador de fim de texto caso contratio o (.) sera inserido automaticamente. \n\n Exemplo: abbc. \n\n Depois clique no botão 'Codificar' \n Os resultado desse método aparecerão nas caixas de texto 'Tabela de porcentagens' e 'Média dos intervalos' \n \n Para Decodificar insira a letra seguida de sua porcentagem (separados por um espaço em branco) dentro da caixa 'Tabela de porcentagens'. Na caixa de texto 'Media dos intervalos' ensira a média dos intervalos finais onde encontra-se o (.) '\n\n Exemplo: \n\n Tabela de Porcentagens : a 0.5 . 0.25 b 0.25 \n Media dos intervalos : 0.2265625 \n\n Clique então em 'Decodificar' \nO restultado aparecerá na caixa 'Texto Decodificado' \n \n \nEste trabalho foi realizado pelos alunos Leandro da Silva e Mauro Sergio Lopes da graduação de ciência da computação da UFF \nDisciplina: Sistemas de Multimídia \nProfessira: Debora Saade";
+			}
+						
+           function cod_aritimetica(textoE){     
+               
+			   		var quantidade_T = 0;
+                var antiga_l = new lista();
+                var vet_letras = textoE;
+				if(vet_letras[vet_letras.length-1]!='.'){
+				  vet_letras = vet_letras + '.';
+				}
+				var porcentagens = "";
+			   document.getElementById("textoR").value = ""
+			   
+				for (var i = 0; i<vet_letras.length ;i++){
+                    antiga_l = antiga_l.insere_na_lista(antiga_l,vet_letras[i]);
+                    quantidade_T = quantidade_T + 1;
+                }
+			   	   
+                antiga_l.calcula_porcentagens(antiga_l, quantidade_T);
+			   	document.getElementById("textoPasso").value = "1º Calculamos as porcentagens de ocorrência de cada letra \n";
+                nova_lista = new lista();
+                while(antiga_l != null){ 
+									
+                    nova_lista = nova_lista.insere_ordenado(nova_lista,antiga_l);
+                    antiga_l = antiga_l.proximo;
+                }
+                 
+                aux_lista = nova_lista; 
+                while(aux_lista != null){
+                  
+                  document.getElementById("textoR").value = document.getElementById("textoR").value + aux_lista.letra + " "+
+					(aux_lista.porcentagem )+ " " ;
+					
+					document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + aux_lista.letra + ": "
+					+ aux_lista.porcentagem+"% | ";
+                  
+                     
+                  aux_lista= aux_lista.proximo; 
+                }
+				
+			   	document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + " \n";
+			   	document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + " \n";
+			   	document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + "2º Buscar sistematicamente o intervalo em que se encaixa cada caracter: \n";
+			   	document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + " \n";
+			 	
+                inicial = 0;
+                final = 1;
+                 
+               	for ( var i = 0; i < vet_letras.length ; i++){
+                 	aux = nova_lista;
+                 	dif = final - inicial;
+                 	acumulado = inicial;
+                	porcentagens = inicial + "% | ";
+                	while(aux != null){     
+						if(aux.letra != null){
+                        	acumulado = acumulado + (dif)*(aux.porcentagem);
+							porcentagens = porcentagens + aux.letra + ": "+(acumulado * 100) +"% | ";
+                		}
+                    
+                  		if(i==0 && aux.letra == vet_letras[i]){
+                      		final = acumulado;
+                     		inicial = acumulado - (dif)*(aux.porcentagem)
+                    
+                    	}else{
+                        	if(i == vet_letras.length -1 && aux.letra == vet_letras[i] ){
+                          		inicial = acumulado - (dif)*(aux.porcentagem);
+                          
+                          	final = acumulado;
+                          
+                        	}else{
+                          		if(aux.letra == vet_letras[i]){
+                            		final = acumulado;
+                            		inicial = acumulado - (dif)*(aux.porcentagem);
+                          		}
+							}
+                    	}
+						aux = aux.proximo;
+                	}
+					document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + "Passo "+(i+1)+" : \n";
+					document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + porcentagens + " \n";
+					document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + "Ini: " + inicial + " fim: " + final + " \n";
+					document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + " \n";
+					//console.log(porcentagens);
+                	//console.log("Ini: " + inicial + " fim: " + final);
+                    porcentagens=""
+            	}
+			    document.getElementById("textoP").value = ((inicial + final )/2);
+		}
+
+            class lista {
+                    constructor(){
+                        this.letra = null;
+                        this.quantidade = 0;
+                        this.porcentagem = 0.0;
+                        this.proximo = null;
+                    }
+                
+                    insere_na_lista(l,c){
+                      
+                        if(l==null){
+                            var nova_lista = new lista();
+                            nova_lista.letra = c;
+                            nova_lista.quantidade = nova_lista.quantidade+1;
+                            return nova_lista;
+                        }else{
+                            if(l.letra == null){
+                                l.letra = c;
+                                l.quantidade = l.quantidade + 1;
+                                return l;
+                            }
+                            if(l.letra == c){
+                                l.quantidade = l.quantidade + 1;
+                                return l;
+                            } else {
+                                l.proximo = l.insere_na_lista(l.proximo,c);
+                                return l;
+                            }
+
+                        }
+                    }
+                    insere_ordenado(l, p){
+                        
+                        if(l==null){
+                            nova_lista = new lista();
+                            nova_lista.letra = p.letra;
+                            nova_lista.quantidade = p.quantidade;
+                            nova_lista.porcentagem = p.porcentagem;
+                            return nova_lista;
+                        }else{
+                            if(l.letra == null){
+                              l.letra = p.letra;
+                              l.quantidade = p.quantidade;
+                              l.porcentagem = p.porcentagem;
+                              return l;
+                            }
+                          
+                            if(l.porcentagem > p.porcentagem){
+                                l.proximo = l.insere_ordenado(l.proximo,p);
+                                return l;
+                            } else{ 
+                                nova_lista = new lista();
+                                nova_lista.letra = p.letra;
+                                nova_lista.quantidade = p.quantidade;
+                                nova_lista.porcentagem = p.porcentagem;
+                                nova_lista.proximo = l;
+                                return nova_lista;
+                            }
+                        }        
+                    }
+                    calcula_porcentagens(l, quantidade_T){
+                        if(l==null){
+                            return;
+                        } else{
+                            l.porcentagem = l.quantidade / quantidade_T;
+                            l.calcula_porcentagens(l.proximo, quantidade_T);
+                        }
+                    }
+                }
+          
+          
+          
+          function decodifica(textoR){
+                   document.getElementById("textoS").value = "";
+			       vet_l  = (textoR.split(" "));
+                   inicial = 0;
+                   final = 1;
+                   resp="";
+                   valor_final = parseFloat(document.getElementById("textoP").value);
+				   media = (inicial + final )/2	;
+                   acumuladoAnt=0;
+				   
+				   cont = 0;
+				   document.getElementById("textoPasso").value = "Intervalo incial a ser expandido " + "[ " +inicial + " , " + final + " ]" + "\n \n" ;
+               while(media != valor_final){ 
+                       
+                     dif = final - inicial;
+                     acumulado = inicial;
+                    for(i=0 ; i < vet_l.length ; i++){ 
+                       aux_valor = parseFloat(vet_l[i+1]);
+                       acumulado = acumulado + dif*(aux_valor);
+                      
+                       if(valor_final > acumulado){
+                         inicial= acumulado;
+                         i=i+1; 
+                         
+                         
+                       }else{
+                         if(valor_final < acumulado){ 
+                           final = acumulado;
+                             resp = vet_l[i]; 
+                             i = vet_l.length;
+                           }
+                       }
+					   
+                   } 
+                    cont = cont +1;
+                    document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + cont + "º" + " - intervalo expandido " + "[ " +inicial + " , " + final + " ]" + "  Produziu ==> " + resp + "\n" ;
+                    media = (inicial + final )/2;
+                    console.log(media);
+                    console.log(resp);
+                    document.getElementById("textoS").value = document.getElementById("textoS").value + resp;
+					
+                     
+			    }
+                 
+			}
+			
+			
+			
+			
+			
+        </script>
+    </body>
+</html>

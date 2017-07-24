@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Compactadores -  UFF</title>
+        <link rel="stylesheet" >
+		
+		<style>
+			#menu{
+				position: relative;
+				font-family:sans-serif;
+				background-color: beige;
+				padding: 40px;	
+				width: 500px;
+				height: 650px;
+				float: left;
+				border-width: thin;
+    			border-style: solid;
+    			border-color: #000000f;
+			}
+			#titulo{
+				font-size: 40px;
+				border-bottom-color: cadetblue;
+				
+			}
+			#textoInvisivel{
+				visibility: hidden;
+			}
+			
+			#demonstracao{
+				
+				position: relative;
+				width: 500px;
+				font-family:sans-serif;
+				padding: 40px;
+				height: 650px;
+				background-color:floralwhite;	
+				float: left;
+				border-width: thin;
+    			border-style: solid;
+    			border-color: #000000f;
+			}
+			
+			
+		
+		</style>
+		
+    </head>
+    <body>
+		<div id="tudo">
+			<div id="menu">
+				<div id="titulo"> <b>Compactadores de mídias</b></div>
+				<h3><u>Codificação LZ77</u></h3>
+				<button id ="btt" onclick="comoUtilizar(1)">Como utilizar</button>
+
+				<h4> Texto de entrada: </h4>
+				<input type="text" name="textoE" id="textoE" size="60"><br>
+				<br>
+				<button id="bt1" onclick="cod_lz77(document.getElementById('textoE').value)"> Codificar </button>
+
+				<h4> Texto codificado: </h4>
+				<input type="text" name="textoR" id="textoR" size="60" ><br>
+
+				<br>
+				<button id="bt4" onclick="decodifica(document.getElementById('textoR').value)">Decodificar</button>
+
+				<h4> Texto decodificado: </h4>
+				<input type="text" name="textoS" id="textoS" size="60"><br>
+
+
+				<div id="textoInvisivel"> 
+					<input type="text" name="textoInvi" id="textoInvi" size="60">
+				</div>
+			</div>
+
+
+			<div id ="demonstracao">
+				<h3>Passo a passo:</h3>
+				
+					<textarea cols="70" rows="30" name="textoPasso" id="textoPasso" size = "70"  ></textarea>
+
+			</div>
+		</div>	
+				
+		<script> 
+			
+			function comoUtilizar(nada){
+				document.getElementById("textoPasso").value ="Para utilizar o compactador: \nDigite o texto que deseja ser compactado na caixa de texto Texto de Entrada e então clique no botão Codificar \nO resultado aparecerá, então, na caixa Texto Codificado \n \nPara decodificar ensira ('(') em seguida o valor de casas a se voltar dentro da janela seguido de (,) seguido de quantas casas casaram a partir do ponto de retorno dentro da janela seguido de (')'), coloque todas as estruturas de codificacao em seguência e sem espaços \n\n Exemplo: \n\n Texto Codificado: (0,0)a(1,1)b(1,1)c(0,0)d \n\n Clique em Decodificar \nO restultado aparecerá na caixa Texto Decodificado \n \n \nEste trabalho foi realizado pelos alunos Leandro da Silva e Mauro Sergio Lopes da graduação de ciência da computação da UFF \nDisciplina: Sistemas de Multimídia \nProfessira: Debora Saade";
+			}	
+			
+			var tipoDec;			
+			var biblGlobal = "";
+			
+
+			 			
+            function cod_lz77(textoE){
+                var vet = textoE;
+                var tamanho_look = 3;
+                var janela = "";
+				var textoPlano = "";
+				document.getElementById("textoPasso").value = ""
+				
+                
+                for(i = 0; i < vet.length; i++){     
+                    if(janela == "" || janela.indexOf(vet[i]) == -1){
+					
+						
+						document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + "" + (i) + "º Passo : \n  " +  "Janela:" + janela + " | Tamanho do lookahead buffer : 1 " + " | Sequência que casou na Janela: " + "NadaCasou" + "\n";
+						document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + "  Gerado ==> " + "(0,0)"+vet[i] + "\n";
+						
+						
+						
+                        //document.write("(0,0)"+vet[i]);   
+						textoPlano = textoPlano +  "(0,0)"+vet[i];
+                        janela = janela + vet[i];
+										
+                       }else{
+                        if(i <= vet.length ){
+                            aux = "";
+                            j = tamanho_look;
+                            while(j>=0 ){
+                                for (c = 0; c < j; c++){
+                                    aux = aux + vet[i+c];
+                                    
+                                } 
+                                resp = janela.indexOf(aux) ;
+                                if(resp > -1){
+                                    volta = janela.length - resp;
+                                    if(i + j > vet.length -1 ){
+									      /* Se casar tudo ate o final nao coloca mais EOF e
+                                           diminui de 1 o tamanho da palavra que casa para ficar 
+                                           parecido com os slides*/
+                                            
+                                    } else {
+									
+									   if(i + j == vet.length -1 &&  j==tamanho_look){
+									       
+									   }else{
+									    if(j==0){
+										 volta=0;
+										 document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + "" + (i) + "º Passo : \n  " +  "Janela:" + janela + " | Tamanho do lookahead buffer  : "+ j + " | Sequência que casou na Janela: " + "NadaCasou"+ "\n";
+										}else{
+									    document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + "" + (i) + "º Passo : \n  " +  "Janela:" + janela + " | Tamanho do lookahead buffer : "+ j + " | Sequência que casou na Janela: " + aux + "\n";
+						                } 
+										 document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + "  Gerado ==> " + "("+volta +","+j+")"+vet[i+j] + "\n";
+                                        janela = janela + aux + vet[i+j];
+                                        //document.write("("+volta+","+j+")"+vet[i+j]);
+										
+                                        textoPlano = textoPlano +"("+volta+","+j+")"+vet[i+j];
+										i = i+j;
+                                        break;  
+                                       }										
+                                    }
+                                }
+                                j = j-1;
+                                aux = "";
+                            }
+                        }                     
+                    }
+                } 
+				document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + " \n \n Conteudo Final da Janela: " + janela;
+				document.getElementById("textoR").value = textoPlano;
+            }
+          
+           function decodifica(textoR){
+			 document.getElementById("textoPasso").value = "";
+			 var vet_l = textoR;
+             var janela = "";
+             var janela_ant = "";
+			 num_aux="";
+			 j=0;
+               //(0,0)a(1,1)a
+			   //0123456789
+			   
+				ini = 0; 
+                fim = 0;
+                sub = "";
+				sub2 = "";
+				for ( i = 0; i < vet_l.length ; i++){ 
+					if( parseInt(vet_l[i+1]) == 0){
+					
+                        janela_ant = janela;
+						 j=i+1;
+						 while(vet_l[j]!=')'){
+						   j=j+1;
+						 }
+						 janela = janela + (vet_l[j+1]);
+						
+						sub2 = vet_l.substr(i,6);
+						document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + sub2 +  " ==> W = " + janela_ant + ", saida = " + janela + "\n" ;
+							i =j+1;
+					} else {
+						if(janela == ""){ 
+						  alert("janela vazia!");
+						} else { 
+                            
+							j=i+1;
+							while(vet_l[j]!=','){
+							  num_aux = num_aux + vet_l[j] ;
+							  j=j+1;
+							}
+							
+							//console.log(num_aux);
+							
+							ini = janela.length - parseInt(num_aux)  ;
+                          
+                             j=i+1;
+							while(vet_l[j]!=','){
+							  
+							  j=j+1;
+							}   
+                          
+							fim = parseInt(vet_l[j+1])  ; 
+                          
+                            console.log(num_aux);
+                            console.log(fim);
+                            num_aux="";
+							
+
+							if(ini < 0 || ini > janela.length){
+								alert("Valor Inicial informado errado"); 
+								return;
+							}
+							if(fim<0 || fim> janela.length){
+								alert("valor final informado errado");
+								return;
+							}
+							
+							
+							/*console.log(ini);
+                            console.log(fim);
+                            console.log(sub);*/
+                            sub = janela.substr(ini,fim);
+                            janela_ant = janela;
+							j=i+1;
+							while(vet_l[j]!=')'){
+						          j=j+1;
+						       }
+							janela = janela + sub +  (vet_l[j+1]) ;
+							sub ="";
+							sub2 = vet_l.substr(i,6)
+							if(sub2[sub2.length-1]==')'){
+							    sub2 = sub2 + vet_l[j+1] ;
+							}
+							
+							document.getElementById("textoPasso").value = document.getElementById("textoPasso").value + sub2 +  " ==> W = " + janela_ant + ", saida = " + janela + "\n" ;
+                            i=j+1;
+						}
+
+				    }   
+				}
+				
+			   document.getElementById("textoS").value = janela;
+			} 
+            
+        </script>
+    </body>
+</html>
